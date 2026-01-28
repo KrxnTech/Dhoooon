@@ -1,0 +1,37 @@
+.IMAGE {
+    height: 350px;
+    width: 350px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+* {
+    font-family: "Schoolbell", cursive;
+}
+
+h2 {
+    color: black;
+}
+
+p {
+    color: black;
+}
+
+button {
+    margin: 10px;
+    background-color: transparent;
+    color: black;
+    transition: 0.3s all ease-in-out;
+}
+
+button:hover {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
+
+.MusicHomeDiv {
+    background-color: whitesmoke;
+    padding: 20px;
+    border-radius: 30px;
+}
