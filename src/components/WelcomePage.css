@@ -1,0 +1,58 @@
+.Logo {
+    font-size: 100px;
+    animation: rotate 5s linear infinite;
+    color: black;
+    display: block;
+    transform-origin: center center;
+    line-height: 1;
+}
+
+.Name {
+    font-family: "Yesteryear", cursive;
+    color: black;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.WelcomePageDiv {
+    border: 2px solid black;
+    padding: 50px;
+    height: 500px;
+    width: 250px;
+    border-radius: 30px;
+    background-color: white;
+}
+
+.WelcomeText {
+    color: black;
+    font-size: 22px;
+}
+
+.WhyDhoon {
+    color: black;
+    font-size: 22px;
+}
+
+.Buttons {
+    margin: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: transparent;
+    border: 2px solid black;
+    color: black;
+    transition: 0.2s all ease;
+}
+
+.Buttons:hover {
+    border-color: black;
+    background-color: black;
+    color: white;
+}
