@@ -4,7 +4,8 @@ import "./Home.css"
 import Heading from "./Heading";
 
 export default function Home() {
-    const audioRef = useRef(null) // ? 
+
+    const audioRef = useRef(null) // using the function 
     const [isPlaying, setIsPlaying] = useState(false) // initial stage pe song pause haiii
     const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -26,24 +27,29 @@ export default function Home() {
     //     setIsPlaying(true)
     // }
 
+
+    // apne next song pe gaye to current index ka value 0 se 1 ho gaya
     const nextSong = () => {
-        let nextIndex = currentIndex + 1
+        let nextIndex = currentIndex + 1 // 0 + 1 = 1  
         if (nextIndex >= AllMusic.length) {
             nextIndex = 0
         }
-        setCurrentIndex(nextIndex)
+        setCurrentIndex(nextIndex) // index update from 0 to 1 
+
+        // time taken to shift the song from one to another 
         setTimeout(() => {
             audioRef.current.play()
             setIsPlaying(true)
         }, 0)
     }
 
+    // apne prev song pe gaye to current index ka value 1 se 0 ho gaya - Jab function call hua tab !!
     const prevSong = () => {
-        let prevIndex = currentIndex - 1
+        let prevIndex = currentIndex - 1 // 1 - 1 = 0 
         if (prevIndex < 0) {
             prevIndex = AllMusic.length - 1
         }
-        setCurrentIndex(prevIndex)
+        setCurrentIndex(prevIndex) // index update from 1 to 0 
         setTimeout(() => {
             audioRef.current.play()
             setIsPlaying(true)
