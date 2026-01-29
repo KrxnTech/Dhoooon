@@ -2,12 +2,16 @@ import { useState, useRef } from "react";
 import AllMusic from "../MusicData/AllMusic";
 import "./Home.css"
 import Heading from "./Heading";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
 
     const audioRef = useRef(null) // using the function 
     const [isPlaying, setIsPlaying] = useState(false) // initial stage pe song pause haiii
-    const [currentIndex, setCurrentIndex] = useState(0)
+    const { id } = useParams()
+    const [currentIndex, setCurrentIndex] = useState(id)
+    const Navigate = useNavigate()
 
     // create some function which will handle the music operation like pause play repeat ..
 
@@ -59,15 +63,17 @@ export default function Home() {
 
     return (
         <div className="MusicHomeDiv">
+            <button className="BackToSongList" onClick={() => Navigate("/SongList")}>Back</button>
             <Heading />
             <img className="IMAGE" src={AllMusic[currentIndex].img} alt="" />
             <h2>{AllMusic[currentIndex].title}</h2>
             <p>{AllMusic[currentIndex].artist}</p>
+            <input type="range" value="20" className="ProgressBar" />
             <audio src={AllMusic[currentIndex].src} ref={audioRef}></audio>
-            <button onClick={prevSong}>⏮</button>
-            <button onClick={playSong}>▶</button>
-            <button onClick={pauseSong}>⏸</button>
-            <button onClick={nextSong}>⏭</button>
+            <button className="ButtonFunctional" onClick={prevSong}>⏮</button>
+            <button className="ButtonFunctional" onClick={playSong}>▶</button>
+            <button className="ButtonFunctional" onClick={pauseSong}>⏸</button>
+            <button className="ButtonFunctional" onClick={nextSong}>⏭</button>
         </div>
     )
 
