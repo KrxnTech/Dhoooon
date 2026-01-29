@@ -17,14 +17,14 @@ p {
     color: black;
 }
 
-button {
+.ButtonFunctional {
     margin: 10px;
     background-color: transparent;
     color: black;
     transition: 0.3s all ease-in-out;
 }
 
-button:hover {
+.ButtonFunctional:hover {
     background-color: black;
     color: white;
     border-color: black;
@@ -34,4 +34,28 @@ button:hover {
     background-color: whitesmoke;
     padding: 20px;
     border-radius: 30px;
+}
+
+.BackToSongList {
+    position: relative;
+    top: 5px;
+    left: 130px;
+    border: 2px solid black;
+    background-color: transparent;
+    color: black;
+    transition: 0.2s all ease-in-out;
+}
+
+.BackToSongList:hover {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
+
+.ProgressBar {
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background-color: black;
+    cursor: pointer;
 }
