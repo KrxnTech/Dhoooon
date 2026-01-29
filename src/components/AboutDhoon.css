@@ -1,0 +1,31 @@
+.AboutDhoonDiv {
+    border: 2px solid black;
+    padding: 50px;
+    height: 513px;
+    width: 250px;
+    border-radius: 30px;
+    background-color: white;
+}
+
+.AboutDhoonTitle {
+    color: black;
+    font-size: 30px;
+}
+
+.AboutDhoonText {
+    color: black;
+    font-size: 20px;
+}
+
+.Buttons {
+    margin-top: 10px;
+}
+
+.Image {
+    height: 50%;
+    width: 100%;
+    position: relative;
+    top: -11.5px;
+    left: -12.5px;
+    object-fit: cover;
+}
