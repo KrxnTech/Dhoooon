@@ -1,0 +1,93 @@
+.List-Song-title {
+    list-style: none;
+    color: black;
+    font-size: 18px;
+    width: 200px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.2s all ease-in-out;
+}
+
+.List-Song-title:hover {
+    color: white;
+}
+
+
+.SongListDiv {
+    border: 2px solid black;
+    padding: 50px;
+    height: 513px;
+    width: 290px;
+    border-radius: 30px;
+    background-color: white;
+    overflow: hidden;
+}
+
+.SingleSongListDiv {
+    border-radius: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: 0.3s all ease-in-out;
+}
+
+.SingleSongListDiv:hover {
+    background-color: black;
+    color: white;
+}
+
+.PlayIcon {
+    color: black;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.5s all ease-in-out;
+}
+
+
+.Button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.3s all ease-in-out;
+    background-color: transparent;
+    border: 2px solid black;
+    color: black;
+    /* margin: 40px; */
+}
+
+.Button:hover {
+    background-color: black;
+    border-color: black;
+    color: white;
+}
+
+.MusicListTitle {
+    color: black;
+    font-size: 35px;
+    text-align: center;
+    position: relative;
+    top: -60px;
+    background-color: whitesmoke;
+    padding: 10px;
+    border-radius: 30px;
+}
+
+.ULBASE {
+    padding: 10px;
+    margin-top: -40px;
+    max-height: 320px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.ULBASE::-webkit-scrollbar {
+    display: none;
+}
