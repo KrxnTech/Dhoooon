@@ -3,7 +3,16 @@
     color: black;
     position: relative;
     top: -20px;
-    right: 100px;
+    right: 130px;
     font-size: 30px;
     font-family: 'Courier New', Courier, monospace;
+}
+
+
+.About-Dhoon {
+    text-align: center;
+    color: black;
+    position: relative;
+    top: -40px;
+    right: 85px;
 }
