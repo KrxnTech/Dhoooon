@@ -30,7 +30,15 @@ const AllMusic = [
         title: "Harleys in Hawaii",
         artist: "Katty Perry",
         src: "/assets/Katy_Perry_-_Harleys_In_Hawaii_Lyrics_You_and_I_Ridin_Harleys_in_Hawaii-i-i_48kbps.mp4"
+    },
+    {
+        id: "4",
+        img: "https://i.ytimg.com/vi/Dwzk-XZxZ4k/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGGUgUSheMA8=&rs=AOn4CLBnNbww0xQvokwFQi0k3cBqHdVKqA",
+        title: "Telepatia",
+        artist: "Kali Uchis",
+        src: "public/assets/Kali_Uchis_-_telepat_a_128KBPS.mp4"
     }
+
 ]
 
 export default AllMusic
