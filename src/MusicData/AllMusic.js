@@ -36,7 +36,14 @@ const AllMusic = [
         img: "https://i.ytimg.com/vi/Dwzk-XZxZ4k/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGGUgUSheMA8=&rs=AOn4CLBnNbww0xQvokwFQi0k3cBqHdVKqA",
         title: "Telepatia",
         artist: "Kali Uchis",
-        src: "public/assets/Kali_Uchis_-_telepat_a_128KBPS.mp4"
+        src: "/assets/Kali_Uchis_-_telepat_a_128KBPS.mp4"
+    },
+    {
+        id: "5",
+        img: "https://image-cdn.hypb.st/https%3A%2F%2Fhypebeast.com%2Fimage%2F2024%2F03%2F30%2Ftw-travis-scott-fein-music-video-stream.jpg?w=1080&cbr=1&q=90&fit=max",
+        title: "Fein",
+        artist: "Travis Scott",
+        src: "/assets/Travis_Scott_-_FE_N_Lyrics_256KBPS.webm"
     }
 
 ]
