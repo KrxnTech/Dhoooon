@@ -15,7 +15,7 @@ function App() {
           <Route path="/AboutDhoon" element={<AboutDhoon />} />
           <Route path="/SongList" element={<SongList />} />
           <Route path="/Home/:id" element={<Home />} />
-          <Route path="/LikedSongs/:id" element={<LikedSong />} />
+          <Route path="/LikedSongs" element={<LikedSong />} />
         </Routes>
       </BrowserRouter>
     </>
