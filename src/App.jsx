@@ -4,6 +4,7 @@ import AboutDhoon from './components/AboutDhoon';
 import WelcomePage from './components/WelcomPage';
 import SongList from './components/SongList';
 import Home from "./components/Home";
+import LikedSong from "./components/LikedSong";
 function App() {
 
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/AboutDhoon" element={<AboutDhoon />} />
           <Route path="/SongList" element={<SongList />} />
           <Route path="/Home/:id" element={<Home />} />
+          <Route path="/LikedSongs/:id" element={<LikedSong />} />
         </Routes>
       </BrowserRouter>
     </>
