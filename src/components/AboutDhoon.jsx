@@ -9,7 +9,7 @@ export default function AboutDhoon() {
             <p>Here you can ENJOY music without any Adds and without any cost</p>
             <button className="Buttons" onClick={() => Navigate("/")}>Back</button>
             <button className="Buttons" onClick={() => Navigate("/SongList")}>Next</button>
-            <img className="Image" src="public\MusicData\11-117708_anime-little-girl-png-transparent-png-removebg-preview.png" alt="" />
+            <img className="ImageAnimeGirl" src="public\MusicData\11-117708_anime-little-girl-png-transparent-png-removebg-preview.png" alt="" />
         </div>
     )
 } 
