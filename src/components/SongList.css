@@ -2,22 +2,22 @@
     list-style: none;
     color: black;
     font-size: 18px;
-    width: 200px;
+    width: 250px;
     padding: 10px;
     text-align: center;
     transition: 0.2s all ease-in-out;
 }
 
-.List-Song-title:hover {
+/* .List-Song-title:hover {
     color: white;
-}
+} */
 
 
 .SongListDiv {
     border: 2px solid black;
     padding: 50px;
-    height: 513px;
-    width: 290px;
+    height: 550px;
+    width: 340px;
     border-radius: 30px;
     background-color: white;
     overflow: hidden;
@@ -35,22 +35,14 @@
     transition: 0.3s all ease-in-out;
 }
 
-.SingleSongListDiv:hover {
+/* .SingleSongListDiv:hover {
     background-color: black;
     color: white;
-}
-
-.PlayIcon {
-    color: black;
-    margin-left: 10px;
-    cursor: pointer;
-    font-size: 20px;
-    transition: 0.5s all ease-in-out;
-}
+} */
 
 
 .Button {
-    padding: 10px 20px;
+    padding: 10px 40%;
     border-radius: 10px;
     border: none;
     cursor: pointer;
@@ -59,7 +51,7 @@
     background-color: transparent;
     border: 2px solid black;
     color: black;
-    /* margin: 40px; */
+    margin-top: 30px;
 }
 
 .Button:hover {
@@ -74,6 +66,7 @@
     text-align: center;
     position: relative;
     top: -60px;
+    margin-bottom: -50px;
     background-color: whitesmoke;
     padding: 10px;
     border-radius: 30px;
@@ -90,4 +83,50 @@
 
 .ULBASE::-webkit-scrollbar {
     display: none;
+}
+
+.HeartIcon {
+    transition: 0.2s all ease-in-out;
+}
+
+.HeartIcon:hover {
+    font-size: 20px;
+}
+
+.SongListHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: white;
+    border-bottom: 1px solid black;
+    margin-bottom: 15px;
+}
+
+.Image {
+    border-radius: 50%;
+    height: 35px;
+    object-fit: cover;
+    width: 35px;
+    padding: 10px;
+}
+
+.FavSongsButton {
+    padding: 10px 30px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.3s all ease-in-out;
+    background-color: transparent;
+    border: 2px solid black;
+    position: relative;
+    top: -5px;
+    right: -20px;
+    color: black;
+}
+
+.FavSongsButton:hover {
+    background-color: black;
+    color: white;
+    border-color: black;
 }
