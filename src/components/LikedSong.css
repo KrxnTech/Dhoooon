@@ -1,0 +1,69 @@
+.LikedSongDiv {
+    border: 2px solid black;
+    padding: 50px;
+    height: 550px;
+    width: 340px;
+    border-radius: 30px;
+    background-color: white;
+    overflow: hidden;
+}
+
+.LikedSongTitle {
+    font-weight: 800;
+    font-size: 30px;
+    margin-top: -15px;
+    margin-right: 100px;
+    background-color: whitesmoke;
+    padding: 10px;
+    border-radius: 30px;
+}
+
+.ButtonBack {
+    position: relative;
+    top: -85px;
+    left: 150px;
+    background-color: transparent;
+    border: 2px solid black;
+    color: black;
+    transition: 0.2s all ease-in-out;
+}
+
+.ButtonBack:hover {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
+
+.ComedSongsLikedOne {
+    border-radius: 30px;
+    margin: -20px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.ComedSongsLikedOne .FlowerIcon {
+    padding-right: 10px;
+    display: inline-block;
+}
+
+.FlowerWrapper {
+    display: inline-block;
+    /* animation: Rotate 3s infinite linear; */
+}
+
+/* @keyframes Rotate {
+    from {
+        transform: rotate(0deg) translateX(10px);
+    }
+
+    to {
+        transform: rotate(360deg) translateX(10px);
+    }
+} */
+
+.ComedSongsLikedOne p {
+    font-size: 19px;
+}
