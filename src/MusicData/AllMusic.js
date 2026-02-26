@@ -1,7 +1,3 @@
-// Here we will create an object array which is going to store all the Music
-
-
-
 const AllMusic = [
     {
         id: "0",

@@ -22,10 +22,10 @@
 }
 
 .ImageAnimeGirl {
-    height: 50%;
+    height: 40%;
     width: 100%;
     position: relative;
-    top: -11.5px;
-    left: -12.5px;
+    top: -6.5px;
+    left: -5.5px;
     object-fit: cover;
 }
