@@ -1,15 +1,37 @@
-import { useNavigate } from "react-router-dom"
-import "./AboutDhoon.css"
+import { useNavigate } from "react-router-dom";
+import "./AboutDhoon.css";
+
 export default function AboutDhoon() {
-    const Navigate = useNavigate()
-    return (
-        <div className="AboutDhoonDiv">
-            <h3 className="AboutDhoonTitle">About Dhoon 💗</h3>
-            <p className="AboutDhoonText">It is a personal music player made by KrxnTech</p>
-            <p>Here you can ENJOY music without any Adds and without any cost</p>
-            <button className="Buttons" onClick={() => Navigate("/")}>Back</button>
-            <button className="Buttons" onClick={() => Navigate("/SongList")}>Next</button>
-            <img className="ImageAnimeGirl" src="images/pngtree-isolated-cat-on-white-background-png-image_9158356.png" alt="" />
+  const navigate = useNavigate();
+
+  return (
+    <main className="about-page">
+      <div className="about-content">
+        <h1 className="about-brand">Dhoon</h1>
+        <h2 className="about-title">About Dhoon</h2>
+        <p className="about-text">
+          It is a personal music player made by KrxnTech.
+        </p>
+        <p className="about-text">
+          Here you can enjoy music without any ads and without any cost.
+        </p>
+        <div className="about-actions">
+          <button
+            type="button"
+            className="about-cta"
+            onClick={() => navigate("/")}
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            className="about-cta about-cta-primary"
+            onClick={() => navigate("/SongList")}
+          >
+            Next
+          </button>
         </div>
-    )
-} 
+      </div>
+    </main>
+  );
+}
