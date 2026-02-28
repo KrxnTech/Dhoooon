@@ -1,69 +1,259 @@
-.LikedSongDiv {
-    border: 2px solid black;
-    padding: 50px;
-    height: 550px;
-    width: 340px;
-    border-radius: 30px;
-    background-color: white;
-    overflow: hidden;
+/* Liked Songs - Same layout & colors as SongList (phone width) */
+.liked-page {
+  --liked-text: #1a1a2e;
+  --liked-accent: #e94560;
+  --liked-accent-hover: #c73e54;
+  --liked-muted: rgba(26, 26, 46, 0.65);
+  --liked-bg: #fff;
+  --liked-radius: 20px;
 }
 
-.LikedSongTitle {
-    font-weight: 800;
-    font-size: 30px;
-    margin-top: -15px;
-    margin-right: 100px;
-    background-color: whitesmoke;
-    padding: 10px;
-    border-radius: 30px;
+.liked-page {
+  min-height: 80vh;
+  min-height: 80dvh;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0 auto;
+  padding: 1rem;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-top: max(1rem, env(safe-area-inset-top));
+  background: var(--liked-bg);
+  box-sizing: border-box;
+  overflow-x: hidden;
+  border-radius: var(--liked-radius);
+  font-family: system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
-.ButtonBack {
-    position: relative;
-    top: -85px;
-    left: 150px;
-    background-color: transparent;
-    border: 2px solid black;
-    color: black;
-    transition: 0.2s all ease-in-out;
+/* Header */
+.liked-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
-.ButtonBack:hover {
-    background-color: black;
-    color: white;
-    border-color: black;
+.liked-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--liked-text);
 }
 
-.ComedSongsLikedOne {
-    border-radius: 30px;
-    margin: -20px;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 30px;
+.liked-back {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--liked-text);
+  background: transparent;
+  border: 2px solid var(--liked-text);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.ComedSongsLikedOne .FlowerIcon {
-    padding-right: 10px;
-    display: inline-block;
+.liked-back:hover {
+  background: var(--liked-text);
+  color: var(--liked-bg);
 }
 
-.FlowerWrapper {
-    display: inline-block;
-    /* animation: Rotate 3s infinite linear; */
+.liked-back:focus-visible {
+  outline: 2px solid var(--liked-accent);
+  outline-offset: 2px;
 }
 
-/* @keyframes Rotate {
-    from {
-        transform: rotate(0deg) translateX(10px);
-    }
+/* Empty state */
+.liked-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
 
-    to {
-        transform: rotate(360deg) translateX(10px);
-    }
-} */
+.liked-empty-text {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--liked-text);
+}
 
-.ComedSongsLikedOne p {
-    font-size: 19px;
+.liked-empty-hint {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--liked-muted);
+}
+
+/* Scrollable list */
+.liked-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--liked-muted) transparent;
+}
+
+.liked-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.liked-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.liked-list::-webkit-scrollbar-thumb {
+  background: var(--liked-muted);
+  border-radius: 3px;
+}
+
+/* List item */
+.liked-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(26, 26, 46, 0.08);
+}
+
+.liked-item:last-child {
+  border-bottom: none;
+}
+
+.liked-item-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  background: none;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.liked-item-main:hover {
+  background: rgba(26, 26, 46, 0.06);
+}
+
+.liked-item-main:focus-visible {
+  outline: 2px solid var(--liked-accent);
+  outline-offset: 2px;
+}
+
+.liked-item-art {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.liked-item-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--liked-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.liked-item-remove {
+  flex-shrink: 0;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--liked-accent);
+  background: rgba(233, 69, 96, 0.12);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.liked-item-remove:hover {
+  color: var(--liked-bg);
+  background: var(--liked-accent-hover);
+}
+
+.liked-item-remove:focus-visible {
+  outline: 2px solid var(--liked-accent);
+  outline-offset: 2px;
+}
+
+/* Bottom actions */
+.liked-actions {
+  flex-shrink: 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(26, 26, 46, 0.08);
+}
+
+.liked-back-bottom {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--liked-text);
+  background: transparent;
+  border: 2px solid var(--liked-text);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.liked-back-bottom:hover {
+  background: var(--liked-text);
+  color: var(--liked-bg);
+}
+
+.liked-back-bottom:focus-visible {
+  outline: 2px solid var(--liked-accent);
+  outline-offset: 2px;
+}
+
+/* Phone width */
+.liked-page {
+  max-width: 22rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 479px) {
+  .liked-page {
+    padding: 0.75rem;
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  .liked-title {
+    font-size: 1.2rem;
+  }
+
+  .liked-item-title {
+    font-size: 0.875rem;
+  }
+
+  .liked-item-remove {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+  }
 }
