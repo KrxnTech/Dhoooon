@@ -1,58 +1,276 @@
-.Logo {
-    font-size: 100px;
-    animation: rotate 5s linear infinite;
-    color: black;
-    display: block;
-    transform-origin: center center;
-    line-height: 1;
+.welcome-page {
+  --welcome-text: #1a1a2e;
+  --welcome-accent: #e94560;
+  --welcome-accent-hover: #c73e54;
+  --welcome-transition: 0.25s ease;
+  cursor: pointer;
 }
 
-.Name {
-    font-family: "Yesteryear", cursive;
-    color: black;
+.welcome-page {
+  min-height: 80vh;
+  min-height: 80dvh;
+  width: 100%;
+  max-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  padding-top: max(1rem, env(safe-area-inset-top));
+  background: #fff;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  border-radius: 20px;
 }
 
-@keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
+.welcome-content {
+  width: 100%;
+  max-width: 22rem; /* phone-like width */
+  text-align: center;
+  animation: welcome-in 0.5s ease-out;
 }
 
-.WelcomePageDiv {
-    border: 2px solid black;
-    padding: 50px;
-    height: 500px;
-    width: 250px;
-    border-radius: 30px;
-    background-color: white;
+@keyframes welcome-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.WelcomeText {
-    color: black;
-    font-size: 22px;
+.welcome-brand {
+  margin: 0 0 clamp(0.75rem, 2.5vh, 1.5rem);
+  font-family: "Yesteryear", cursive;
+  font-size: clamp(2.25rem, 10vw, 5rem);
+  font-weight: 400;
+  color: var(--welcome-text);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
 }
 
-.WhyDhoon {
-    color: black;
-    font-size: 22px;
+.welcome-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: clamp(0.75rem, 3vh, 2rem);
 }
 
-.Buttons {
-    margin: 20px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    background-color: transparent;
-    border: 2px solid black;
-    color: black;
-    transition: 0.2s all ease;
+.welcome-logo i {
+  font-size: clamp(4rem, 18vw, 10rem);
+  color: var(--welcome-accent);
+  animation: welcome-spin 8s linear infinite;
+  transform-origin: center;
 }
 
-.Buttons:hover {
-    border-color: black;
-    background-color: black;
-    color: white;
+@keyframes welcome-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.welcome-title {
+  margin: 0 0 0.375rem;
+  font-size: clamp(1.125rem, 4vw, 2rem);
+  font-weight: 600;
+  color: var(--welcome-text);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.welcome-tagline {
+  margin: 0 0 clamp(1.25rem, 4vh, 2.5rem);
+  font-size: clamp(0.875rem, 2.5vw, 1.25rem);
+  color: var(--welcome-text);
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+.welcome-cta {
+  display: inline-block;
+  min-height: 2.75rem;
+  padding: 0.75rem 1.5rem;
+  font-size: clamp(0.9375rem, 2.5vw, 1.125rem);
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: 0.2s all ease-in-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.welcome-cta:hover {
+  background: var(--welcome-accent-hover);
+}
+
+.welcome-cta:active {
+  transform: translateY(0);
+}
+
+.welcome-cta:focus-visible {
+  outline: 2px solid var(--welcome-accent);
+  outline-offset: 3px;
+}
+
+
+@media (max-width: 479px) {
+  .welcome-page {
+    padding: 0.75rem;
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  .welcome-brand {
+    font-size: clamp(2rem, 12vw, 2.75rem);
+  }
+
+  .welcome-logo i {
+    font-size: clamp(3.5rem, 22vw, 5rem);
+  }
+
+  .welcome-title {
+    font-size: clamp(1rem, 5vw, 1.25rem);
+  }
+
+  .welcome-tagline {
+    font-size: 0.875rem;
+  }
+
+  .welcome-cta {
+    min-height: 2.75rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 18rem;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .welcome-page {
+    padding: 1.25rem;
+  }
+
+  .welcome-content {
+    max-width: 22rem;
+  }
+
+  .welcome-brand {
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
+  }
+
+  .welcome-logo i {
+    font-size: clamp(4.5rem, 15vw, 6rem);
+  }
+
+  .welcome-cta {
+    padding: 0.75rem 1.75rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .welcome-page {
+    padding: 2rem;
+  }
+
+  .welcome-content {
+    max-width: 22rem;
+  }
+
+  .welcome-brand {
+    font-size: clamp(3.5rem, 6vw, 4.5rem);
+  }
+
+  .welcome-logo i {
+    font-size: clamp(6rem, 12vw, 8rem);
+  }
+
+  .welcome-title {
+    font-size: clamp(1.5rem, 2.5vw, 1.75rem);
+  }
+
+  .welcome-tagline {
+    font-size: 1.125rem;
+  }
+
+  .welcome-cta {
+    padding: 0.875rem 2rem;
+    font-size: 1.0625rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .welcome-page {
+    padding: 2rem;
+  }
+
+  .welcome-content {
+    max-width: 22rem;
+  }
+
+  .welcome-brand {
+    font-size: 4.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .welcome-logo {
+    margin-bottom: 1.5rem;
+  }
+
+  .welcome-logo i {
+    font-size: 8rem;
+  }
+
+  .welcome-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .welcome-tagline {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .welcome-cta {
+    padding: 0.875rem 2.25rem;
+    font-size: 1.125rem;
+    min-height: auto;
+  }
+}
+
+@media (min-width: 1280px) {
+  .welcome-brand {
+    font-size: 5rem;
+  }
+
+  .welcome-logo i {
+    font-size: 10rem;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-content {
+    animation: none;
+  }
+
+  .welcome-logo i {
+    animation: none;
+  }
+
+  .welcome-cta {
+    transition: none;
+  }
 }

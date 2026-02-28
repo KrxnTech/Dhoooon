@@ -1,17 +1,26 @@
-import { useNavigate } from "react-router-dom"
-import "./WelcomePage.css"
-export default function WelcomePage() {
-    const Navigate = useNavigate()
-    return (
-        <div className="WelcomePageDiv">
+import { useNavigate } from "react-router-dom";
+import "./WelcomePage.css";
 
-            <h1 className="Name">DHOON 🎵</h1>
-            <div className="LogoWrapper">
-                <h1 className="Logo"><i class="fa-solid fa-compact-disc"></i></h1>
-            </div>
-            <h3 className="WelcomeText">Welcome to Dhoon</h3>
-            <p className="WhyDhoon">Your Personal Music Player</p>
-            <button className="Buttons" onClick={() => Navigate("/AboutDhoon")}>Next</button>
+export default function WelcomePage() {
+  const navigate = useNavigate();
+
+  return (
+    <main className="welcome-page">
+      <div className="welcome-content">
+        <h1 className="welcome-brand">Dhoon</h1>
+        <div className="welcome-logo" aria-hidden="true">
+          <i className="fa-solid fa-compact-disc" />
         </div>
-    )
+        <h2 className="welcome-title">Welcome to Dhoon</h2>
+        <p className="welcome-tagline">Your Personal Music Player</p>
+        <button
+          type="button"
+          className="welcome-cta"
+          onClick={() => navigate("/AboutDhoon")}
+        >
+          Get Started
+        </button>
+      </div>
+    </main>
+  );
 }
