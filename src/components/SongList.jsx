@@ -1,53 +1,72 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import AllMusic from "../MusicData/AllMusic";
-import "./SongList.css"
+import "./SongList.css";
+
 export default function SongList() {
-    const navigate = useNavigate()
-    const HandleAddToFav = (music) => {
-        const Stored = localStorage.getItem("LikedSongs")
-        const LikedSongs = Stored ? JSON.parse(Stored) : []
+  const navigate = useNavigate();
 
-        const IsAlreadyLiked = LikedSongs.some(song => song.id === music.id)
+  const handleAddToFav = (music) => {
+    const stored = localStorage.getItem("LikedSongs");
+    const likedSongs = stored ? JSON.parse(stored) : [];
+    const isAlreadyLiked = likedSongs.some((song) => song.id === music.id);
 
-        if (!IsAlreadyLiked) {
-            const Update = [...LikedSongs, music]
-            localStorage.setItem('LikedSongs', JSON.stringify(Update))
-        } else {
-            alert(`${music.title} is Already in Fav`)
-        }
-
-
+    if (!isAlreadyLiked) {
+      const updated = [...likedSongs, music];
+      localStorage.setItem("LikedSongs", JSON.stringify(updated));
+    } else {
+      alert(`${music.title} is already in favourites`);
     }
-    return (
-        <div className="SongListDiv">
-            <p className="MusicListTitle">Song List <button onClick={() => navigate("/LikedSongs")} className="FavSongsButton">Fav Songs</button></p>
-            <div className="SongListHeader">
-                <p className="SongNameP">SongName</p>
-                <p className="AddFavP">Add Fav</p>
-            </div>
-            <br />
-            <ul className="ULBASE">
-                {
-                    AllMusic.map((Music) => (
-                        <div key={Music.id} className="SingleSongListDiv">
-                            <img
-                                className="Image"
-                                src={Music.img}
-                                alt="" />
-                            <li
-                                onClick={() => navigate(`/Home/${Music.id}`)}
-                                className="List-Song-title">
-                                {Music.title}
-                            </li>
-                            <i
-                                onClick={() => HandleAddToFav(Music)}
-                                className="HeartIcon">
-                                💗</i>
-                        </div>
-                    ))
-                }
-            </ul>
-            <button className="Button" onClick={() => navigate("/AboutDhoon")}>Back</button>
-        </div>
-    )
+  };
+
+  return (
+    <div className="songlist-page">
+      <header className="songlist-header">
+        <h1 className="songlist-title">Song List</h1>
+        <button
+          type="button"
+          className="songlist-fav-btn"
+          onClick={() => navigate("/LikedSongs")}
+        >
+          Fav Songs
+        </button>
+      </header>
+
+      <ul className="songlist-list" role="list">
+        {AllMusic.map((music) => (
+          <li key={music.id} className="songlist-item">
+            <button
+              type="button"
+              className="songlist-item-main"
+              onClick={() => navigate(`/Home/${music.id}`)}
+            >
+              <img
+                className="songlist-item-art"
+                src={music.img}
+                alt=""
+              />
+              <span className="songlist-item-title">{music.title}</span>
+            </button>
+            <button
+              type="button"
+              className="songlist-item-fav"
+              onClick={() => handleAddToFav(music)}
+              aria-label={`Add ${music.title} to favourites`}
+            >
+              ♥
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <div className="songlist-actions">
+        <button
+          type="button"
+          className="songlist-back"
+          onClick={() => navigate("/AboutDhoon")}
+        >
+          Back
+        </button>
+      </div>
+    </div>
+  );
 }
