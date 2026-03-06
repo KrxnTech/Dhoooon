@@ -5,8 +5,10 @@ import WelcomePage from './components/WelcomPage';
 import SongList from './components/SongList';
 import Home from "./components/Home";
 import LikedSong from "./components/LikedSong";
-function App() {
+import Playlists from "./components/Playlists";
+import PlaylistDetail from "./components/PlaylistDetail";
 
+function App() {
   return (
     <>
       <BrowserRouter>
@@ -16,10 +18,12 @@ function App() {
           <Route path="/SongList" element={<SongList />} />
           <Route path="/Home/:id" element={<Home />} />
           <Route path="/LikedSongs" element={<LikedSong />} />
+          <Route path="/Playlists" element={<Playlists />} />
+          <Route path="/Playlist/:id" element={<PlaylistDetail />} />
         </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
 export default App
