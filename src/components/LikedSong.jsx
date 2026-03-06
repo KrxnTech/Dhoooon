@@ -1,22 +1,13 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMusic } from "../context/MusicContext";
 import "./LikedSong.css";
 
 export default function LikedSong() {
   const navigate = useNavigate();
-  const [likedSongs, setLikedSongs] = useState([]);
+  const { likedSongs, toggleLike } = useMusic();
 
-  useEffect(() => {
-    const stored = localStorage.getItem("LikedSongs");
-    if (stored) {
-      setLikedSongs(JSON.parse(stored));
-    }
-  }, []);
-
-  const handleRemoveFromFav = (id) => {
-    const updated = likedSongs.filter((song) => song.id !== id);
-    setLikedSongs(updated);
-    localStorage.setItem("LikedSongs", JSON.stringify(updated));
+  const handleRemoveFromFav = (music) => {
+    toggleLike(music);
   };
 
   return (
@@ -56,7 +47,7 @@ export default function LikedSong() {
               <button
                 type="button"
                 className="liked-item-remove"
-                onClick={() => handleRemoveFromFav(song.id)}
+                onClick={() => handleRemoveFromFav(song)}
                 aria-label={`Remove ${song.title} from favourites`}
               >
                 Remove
