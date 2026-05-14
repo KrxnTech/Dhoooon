@@ -1,76 +1,118 @@
-* {
-  font-family: "Schoolbell", cursive;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Pacifico&display=swap');
+
+:root {
+  /* Main Palette */
+  --bg-primary: #16161F;
+  --bg-secondary: #1B1B26;
+  --bg-card: #232336;
+  --bg-elevated: #2A2A40;
+
+  /* Accents */
+  --accent: #A78BFA;
+  --accent-glow: #C4B5FD;
+  --accent-soft: rgba(167, 139, 250, 0.15);
+
+  /* Text */
+  --text-main: #F3F4F6;
+  --text-secondary: #9CA3AF;
+
+  /* Borders & Shadows */
+  --border-color: rgba(255, 255, 255, 0.08);
+  --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(167, 139, 250, 0.2);
+
+  /* Transitions */
+  --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Outfit', 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  background: var(--bg-primary);
+  background: radial-gradient(circle at top, #232336 0%, #16161F 65%);
+  color: var(--text-main);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-elevated);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Base Headings */
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  border: none;
+  outline: none;
+  background: none;
+  transition: var(--transition-smooth);
 }
 
-button:hover {
-  border-color: #646cff;
+/* Glassmorphism Utility */
+.glass {
+  background: rgba(35, 35, 54, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Animation Classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px var(--accent-soft);
   }
 
-  a:hover {
-    color: #747bff;
+  50% {
+    box-shadow: 0 0 20px var(--accent-soft);
   }
-  button {
-    background-color: #f9f9f9;
+
+  100% {
+    box-shadow: 0 0 5px var(--accent-soft);
   }
-} */
+}
+
+.animate-fade {
+  animation: fadeIn 0.6s ease-out forwards;
+}

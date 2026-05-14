@@ -23,7 +23,7 @@
   box-sizing: border-box;
   overflow-x: hidden;
   border-radius: var(--player-radius);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 /* Header: Back + Heading */
@@ -63,7 +63,7 @@
 }
 
 .player-header .Dhoon {
-  font-family: "Yesteryear", cursive;
+  font-family: "Poppins", sans-serif;
   font-size: 1.5rem;
   color: var(--player-text);
 }

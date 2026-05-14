@@ -61,6 +61,15 @@ const AllMusic = [
         album: "Nine Track Mind",
         genre: "Pop",
         src: "/assets/Charlie Puth - We Don't Talk Anymore (feat. Selena Gomez) [Official Video].mp3"
+    },
+    {
+        id: "7",
+        img: "https://assets.rjassets.com/static/mp3/mh-project-dreamcatcher-(bahramji-maneesh-de-moor)-(house-remix)/0c779259.jpg",
+        title: "Dreamcatcher",
+        artist: "Bahramji, Maneesh De Moor",
+        album: "Single",
+        genre: "House",
+        src: "/assets/Bahramji & Maneesh de Moor - Dreamcatcher.mp3"
     }
 
 ]

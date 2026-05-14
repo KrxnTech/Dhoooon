@@ -1,179 +1,188 @@
 .liked-page-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  width: 100%;
+  padding: 40px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.liked-glow {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+  filter: blur(80px);
+  z-index: -1;
+  opacity: 0.4;
 }
 
 .liked-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 95vh;
-    width: 95vw;
-    max-width: 1200px;
-    max-height: 900px;
-    background-color: #121212;
-    color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    position: relative;
-    overflow: hidden;
-    padding: 30px 40px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .liked-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-    flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  border-radius: 20px;
+  margin-bottom: 40px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.back-btn:hover {
+  color: var(--accent);
+  transform: translateX(-5px);
 }
 
 .liked-title {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
 }
 
-.liked-back {
-    padding: 0.6rem 1.5rem;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #ffffff;
-    background: transparent;
-    border: 1px solid #727272;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-}
-
-.liked-back:hover {
-    border-color: #ffffff;
-    transform: scale(1.04);
-}
-
-.liked-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    overflow-y: auto;
-    scrollbar-width: none;
-}
-
-.liked-list::-webkit-scrollbar {
-    display: none;
-}
-
-.liked-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    background: transparent;
-    border-radius: 4px;
-    transition: background 0.2s;
-}
-
-.liked-item:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-.liked-item-main {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    flex: 1;
-    text-align: left;
-}
-
-.liked-item-art {
-    width: 48px;
-    height: 48px;
-    border-radius: 4px;
-    object-fit: cover;
-}
-
-.liked-item-title {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #ffffff;
-}
-
-.liked-item-remove {
-    padding: 0.5rem 1rem;
-    background: transparent;
-    color: #b3b3b3;
-    border: 1px solid #727272;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.liked-item-remove:hover {
-    color: #ffffff;
-    border-color: #ffffff;
-    transform: scale(1.04);
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 
 .liked-empty {
-    text-align: center;
-    margin-top: 5rem;
-    color: #b3b3b3;
+  text-align: center;
+  padding: 100px 40px;
+  border-radius: 30px;
+}
+
+.empty-icon-wrap {
+  width: 100px;
+  height: 100px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  margin: 0 auto 30px;
 }
 
 .liked-empty-text {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 0.5rem;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
-.liked-actions {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: center;
+.liked-empty-hint {
+  color: var(--text-secondary);
+  margin-bottom: 40px;
 }
 
-.liked-back-bottom {
-    padding: 0.8rem 2rem;
-    background: #1DB954;
-    color: #000000;
-    border: none;
-    border-radius: 20px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
+.go-back-btn {
+  padding: 15px 35px;
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: var(--shadow-glow);
 }
 
-.liked-back-bottom:hover {
-    background: #1ed760;
-    transform: scale(1.04);
+/* List Grid */
+.liked-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 30px;
+}
+
+.liked-card {
+  padding: 15px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: var(--transition-bounce);
+}
+
+.liked-card:hover {
+  background: var(--bg-elevated);
+  transform: translateY(-10px);
+}
+
+.card-artwork {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.card-artwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+}
+
+.liked-card:hover .card-artwork img {
+  transform: scale(1.1);
+}
+
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
+
+.liked-card:hover .card-overlay {
+  opacity: 1;
+}
+
+.card-info {
+  text-align: center;
+}
+
+.song-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.song-artist {
+  display: block;
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {
-    .liked-wrapper {
-        height: 100vh;
-        width: 100vw;
-        border-radius: 0;
-        padding: 20px;
-    }
+  .liked-page-container {
+    padding: 20px;
+  }
+
+  .liked-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .liked-list-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+  }
 }

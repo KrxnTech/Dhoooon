@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useRef } from 'react';
 import AllMusic from '../MusicData/AllMusic';
 import { getAllSongs, saveSong, deleteSongFromDB } from './db';
 
@@ -10,6 +10,7 @@ export const MusicProvider = ({ children }) => {
     const [playlist, setPlaylist] = useState(AllMusic);
     const [downloadedSongs, setDownloadedSongs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [activeMood, setActiveMood] = useState('all');
 
     // Load downloaded songs from IndexedDB (actual files)
     useEffect(() => {
@@ -101,21 +102,48 @@ export const MusicProvider = ({ children }) => {
         }
     };
 
+    const moodCategories = [
+        { id: 'rainy', name: 'Rainy Night', icon: '☔' },
+        { id: 'focus', name: 'Calm Focus', icon: '🌙' },
+        { id: 'romantic', name: 'Romantic', icon: '❤️' },
+        { id: 'sleep', name: 'Sleep Mode', icon: '🌌' },
+        { id: 'drive', name: 'Night Drive', icon: '🚗' },
+        { id: 'lofi', name: 'Soft Lofi', icon: '🎧' },
+        { id: 'morning', name: 'Peaceful Morning', icon: '🌅' },
+        { id: 'deep', name: 'Deep Thoughts', icon: '✨' }
+    ];
+
     const [userPlaylists, setUserPlaylists] = useState(() => {
         const stored = localStorage.getItem("UserPlaylists");
-        return stored ? JSON.parse(stored) : [];
+        let playlists = stored ? JSON.parse(stored) : [];
+        
+        // Ensure every moodCategory has a corresponding playlist
+        moodCategories.forEach(mood => {
+            if (!playlists.find(pl => pl.id === mood.id)) {
+                playlists.push({
+                    id: mood.id,
+                    name: mood.name,
+                    limit: 100,
+                    songs: [],
+                    isSystem: true
+                });
+            }
+        });
+        
+        return playlists;
     });
 
     useEffect(() => {
         localStorage.setItem("UserPlaylists", JSON.stringify(userPlaylists));
     }, [userPlaylists]);
 
-    const createPlaylist = (name, limit) => {
+    const createPlaylist = (name, limit, moodId = 'all') => {
         const newPlaylist = {
             id: `playlist-${Date.now()}`,
             name,
             limit: parseInt(limit, 10),
-            songs: []
+            songs: [],
+            moodId
         };
         setUserPlaylists(prev => [...prev, newPlaylist]);
     };
@@ -156,6 +184,101 @@ export const MusicProvider = ({ children }) => {
         });
     };
 
+    const [userProfile, setUserProfile] = useState({
+        name: "Krish",
+        username: "@krish_night",
+        bio: "Dreaming through melodies.",
+        avatar: "https://mir-s3-cdn-cf.behance.net/project_modules/1400/9e3ae3179261313.64f6974fb4e06.jpg",
+        personality: "Late-night emotional listener 🌙",
+        favoriteGenre: "Lo-Fi / Soul",
+        favoriteArtist: "The Weeknd"
+    });
+
+    const [userStats, setUserStats] = useState({
+        hours: 128,
+        streak: 15,
+        likedCount: likedSongs.length,
+        vibeSummary: "soft nostalgia and calm nights.",
+        moodTrend: "Peaceful 🕊️",
+        activeTime: "11 PM - 2 AM"
+    });
+
+    useEffect(() => {
+        setUserStats(prev => ({ ...prev, likedCount: likedSongs.length }));
+    }, [likedSongs]);
+
+    // Global Player Logic
+    const audioRef = useRef(new Audio());
+    const [currentQueue, setCurrentQueue] = useState([]);
+    const [currentSongIndex, setCurrentSongIndex] = useState(-1);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [volume, setVolume] = useState(1);
+
+    const currentSong = currentSongIndex !== -1 ? currentQueue[currentSongIndex] : null;
+
+    useEffect(() => {
+        const audio = audioRef.current;
+        const updateTime = () => setCurrentTime(audio.currentTime);
+        const updateDuration = () => setDuration(audio.duration);
+        const handleEnded = () => nextSong();
+
+        audio.addEventListener('timeupdate', updateTime);
+        audio.addEventListener('loadedmetadata', updateDuration);
+        audio.addEventListener('ended', handleEnded);
+
+        return () => {
+            audio.removeEventListener('timeupdate', updateTime);
+            audio.removeEventListener('loadedmetadata', updateDuration);
+            audio.removeEventListener('ended', handleEnded);
+        };
+    }, [currentQueue, currentSongIndex]);
+
+    useEffect(() => {
+        audioRef.current.volume = volume;
+    }, [volume]);
+
+    const playSong = (song, queue) => {
+        if (!song) return;
+        const newQueue = queue || [song];
+        const index = newQueue.findIndex(s => s.id === song.id);
+        
+        setCurrentQueue(newQueue);
+        setCurrentSongIndex(index !== -1 ? index : 0);
+        
+        audioRef.current.src = song.src;
+        audioRef.current.play().catch(err => console.log("Playback error:", err));
+        setIsPlaying(true);
+    };
+
+    const togglePlay = () => {
+        if (!currentSong) return;
+        if (isPlaying) {
+            audioRef.current.pause();
+        } else {
+            audioRef.current.play().catch(err => console.log("Playback error:", err));
+        }
+        setIsPlaying(!isPlaying);
+    };
+
+    const nextSong = () => {
+        if (currentQueue.length === 0) return;
+        const nextIndex = (currentSongIndex + 1) % currentQueue.length;
+        playSong(currentQueue[nextIndex], currentQueue);
+    };
+
+    const prevSong = () => {
+        if (currentQueue.length === 0) return;
+        const prevIndex = (currentSongIndex - 1 + currentQueue.length) % currentQueue.length;
+        playSong(currentQueue[prevIndex], currentQueue);
+    };
+
+    const seekTo = (time) => {
+        audioRef.current.currentTime = time;
+        setCurrentTime(time);
+    };
+
     return (
         <MusicContext.Provider value={{
             playlist,
@@ -169,7 +292,24 @@ export const MusicProvider = ({ children }) => {
             createPlaylist,
             deletePlaylist,
             addToPlaylist,
-            removeFromPlaylist
+            removeFromPlaylist,
+            userProfile,
+            userStats,
+            moodCategories,
+            activeMood,
+            setActiveMood,
+            currentSong,
+            isPlaying,
+            currentTime,
+            duration,
+            volume,
+            setVolume,
+            playSong,
+            togglePlay,
+            nextSong,
+            prevSong,
+            seekTo,
+            currentQueue
         }}>
             {children}
         </MusicContext.Provider>

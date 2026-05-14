@@ -1,75 +1,59 @@
 import { useNavigate } from "react-router-dom";
 import { useMusic } from "../context/MusicContext";
-import { ChevronLeft, Heart } from "lucide-react";
+import { ChevronLeft, Heart, Music2 } from "lucide-react";
 import "./LikedSong.css";
 
 export default function LikedSong() {
   const navigate = useNavigate();
-  const { likedSongs, toggleLike } = useMusic();
-
-  const handleRemoveFromFav = (music) => {
-    toggleLike(music);
-  };
+  const { likedSongs, toggleLike, playSong, currentSong } = useMusic();
 
   return (
     <div className="liked-page-container">
-      <div className="liked-wrapper">
-        <header className="liked-header">
-          <h1 className="liked-title">Liked Songs</h1>
-          <button
-            type="button"
-            className="liked-back"
-            onClick={() => navigate("/SongList")}
-          >
-            <ChevronLeft size={18} style={{marginRight: '5px'}} />
-            Back
+      <div className="liked-glow"></div>
+      
+      <div className="liked-wrapper animate-fade">
+        <header className="liked-header glass">
+          <button className="back-btn" onClick={() => navigate("/SongList")}>
+            <ChevronLeft size={20} />
+            <span>Sanctuary</span>
           </button>
+          <h1 className="liked-title">Your Favorites</h1>
+          <div className="header-meta">
+            <Heart size={18} fill="var(--accent)" color="var(--accent)" />
+            <span>{likedSongs.length} Melodies</span>
+          </div>
         </header>
 
         {likedSongs.length === 0 ? (
-          <div className="liked-empty">
-            <p className="liked-empty-text">No liked songs yet</p>
-            <p className="liked-empty-hint">Add songs from the Song List with ♥</p>
+          <div className="liked-empty glass">
+            <div className="empty-icon-wrap">
+              <Music2 size={48} />
+            </div>
+            <p className="liked-empty-text">Your heart is quiet.</p>
+            <p className="liked-empty-hint">Save songs that resonate with you from the library.</p>
+            <button className="go-back-btn" onClick={() => navigate("/SongList")}>Explore Music</button>
           </div>
         ) : (
-          <ul className="liked-list">
+          <div className="liked-list-grid">
             {likedSongs.map((song) => (
-              <li key={song.id} className="liked-item">
-                <button
-                  type="button"
-                  className="liked-item-main"
-                  onClick={() => navigate("/SongList")}
-                >
-                  <img
-                    className="liked-item-art"
-                    src={song.img}
-                    alt=""
-                  />
-                  <span className="liked-item-title">{song.title}</span>
-                </button>
-                <button
-                  type="button"
-                  className="liked-item-remove"
-                  onClick={() => handleRemoveFromFav(song)}
-                  aria-label={`Remove ${song.title} from favourites`}
-                >
-                  <Heart size={16} fill="#1DB954" color="#1DB954" style={{marginRight: '8px', verticalAlign: 'middle'}} />
-                  Liked
-                </button>
-              </li>
+              <div key={song.id} className={`liked-card glass ${currentSong?.id === song.id ? 'active' : ''}`} onClick={() => playSong(song, likedSongs)}>
+                <div className="card-artwork">
+                  <img src={song.img} alt={song.title} />
+                  <div className="card-overlay">
+                    <Heart 
+                      size={24} 
+                      fill="var(--accent)" 
+                      color="var(--accent)"
+                      onClick={(e) => { e.stopPropagation(); toggleLike(song); }}
+                    />
+                  </div>
+                </div>
+                <div className="card-info">
+                  <span className="song-title">{song.title}</span>
+                  <span className="song-artist">{song.artist || "Unknown Artist"}</span>
+                </div>
+              </div>
             ))}
-          </ul>
-        )}
-
-        {likedSongs.length > 0 && (
-          <div className="liked-actions">
-            <button
-              type="button"
-              className="liked-back-bottom"
-              onClick={() => navigate("/SongList")}
-            >
-              Back to Song List
-            </button>
           </div>
         )}
       </div>

@@ -4,12 +4,12 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #000000;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    font-family: 'Inter', sans-serif;
+    font-family: "Outfit", sans-serif;
 }
 
 .playlist-detail-wrapper {
@@ -19,10 +19,12 @@
     width: 95vw;
     max-width: 1200px;
     max-height: 900px;
-    background-color: #121212;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     position: relative;
     overflow: hidden;
     padding: 30px 40px;
@@ -46,6 +48,31 @@
 .playlist-detail-stats {
     font-size: 0.9rem;
     color: #b3b3b3;
+}
+
+.playlist-detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.playlist-detail-delete-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+    border: 1px solid rgba(255, 77, 77, 0.2);
+    transition: all 0.2s;
+}
+
+.playlist-detail-delete-btn:hover {
+    background: #ff4d4d;
+    color: #ffffff;
+    transform: scale(1.1);
 }
 
 .playlist-detail-back {

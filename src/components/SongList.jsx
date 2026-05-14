@@ -1,7 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMusic } from "../context/MusicContext";
-import { Home, Music2, FolderOpen, Settings, Search, Mic, FolderPlus, Download, Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Volume2, MoreHorizontal, Heart, Plus, Menu, Info, X } from "lucide-react";
+import {
+  Home, Music2, FolderOpen, Settings, Search, Mic, FolderPlus, Download,
+  Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Volume2,
+  MoreHorizontal, Heart, Plus, Menu, Info, X, User, BarChart3,
+  CloudRain, Moon, Sparkles, Clock, ListMusic, Mic2, Monitor, Flame,
+  ChevronLeft, Trash2
+} from "lucide-react";
 import "./SongList.css";
 
 function formatTime(seconds) {
@@ -18,39 +24,38 @@ export default function SongList() {
     addDownloadedSong,
     removeDownloadedSong,
     userPlaylists,
+    createPlaylist,
+    deletePlaylist,
     addToPlaylist,
     likedSongs,
-    toggleLike
+    toggleLike,
+    userProfile,
+    userStats,
+    moodCategories,
+    setActiveMood,
+    currentSong,
+    isPlaying,
+    playSong,
+    togglePlay,
   } = useMusic();
 
   const [selectedSong, setSelectedSong] = useState(null);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-  const [activeMenu, setActiveMenu] = useState("music");
+  const [activeTab, setActiveTab] = useState("home"); // home, playlists, stats, profile
+  const [immersiveMode, setImmersiveMode] = useState(null); // null, rain, focus, sleep
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newPlaylistName, setNewPlaylistName] = useState("");
   const fileInputRef = useRef(null);
 
-  // Player state
-  const audioRef = useRef(null);
-  const [currentSongIndex, setCurrentSongIndex] = useState(-1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isSeeking, setIsSeeking] = useState(false);
-  const [volume, setVolume] = useState(1);
-  const [toggled, setToggled] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const [discoverSongs, setDiscoverSongs] = useState([]);
-  const [isApiLoading, setIsApiLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const API_KEY = "";
 
   const isLiked = (id) => likedSongs.some(s => s.id === id);
 
   const handleDeleteSong = (music, e) => {
     e.stopPropagation();
-    if (window.confirm(`Are you sure you want to delete "${music.title}" from your Dhoon playlist?`)) {
+    if (window.confirm(`Are you sure you want to delete "${music.title}"?`)) {
       removeDownloadedSong(music.id);
     }
   };
@@ -74,12 +79,12 @@ export default function SongList() {
   const handleSyncFolder = async () => {
     try {
       if (!window.showDirectoryPicker) {
-        alert("Your browser does not support folder synchronization. Please use the 'Pick Songs' button.");
+        alert("Folder sync not supported in this browser.");
         return;
       }
       const directoryHandle = await window.showDirectoryPicker();
       for await (const entry of directoryHandle.values()) {
-        if (entry.kind === 'file' && (entry.name.endsWith('.mp3') || entry.name.endsWith('.m4a') || entry.name.endsWith('.wav') || entry.name.endsWith('.mp4'))) {
+        if (entry.kind === 'file' && /\.(mp3|wav|m4a|mp4)$/.test(entry.name)) {
           const file = await entry.getFile();
           const songUrl = URL.createObjectURL(file);
           const newSong = {
@@ -93,12 +98,8 @@ export default function SongList() {
           addDownloadedSong(newSong, file);
         }
       }
-      alert("Folder synced successfully!");
     } catch (err) {
       console.error(err);
-      if (err.name !== 'AbortError') {
-        alert("Failed to sync folder. Make sure you grant permission.");
-      }
     }
   };
 
@@ -114,456 +115,337 @@ export default function SongList() {
     setSelectedSong(null);
   };
 
+  const handleCreatePlaylist = (e) => {
+    e.preventDefault();
+    if (newPlaylistName.trim()) {
+      createPlaylist(newPlaylistName, 10, 'all');
+      setNewPlaylistName("");
+      setShowCreateModal(false);
+    }
+  };
+
   const startVoiceSearch = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Speech recognition not supported in this browser.");
+      alert("Speech recognition not supported.");
       return;
     }
-
     const recognition = new SpeechRecognition();
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      setSearchTerm(transcript);
-    };
+    recognition.onresult = (event) => setSearchTerm(event.results[0][0].transcript);
     recognition.start();
   };
 
-  const fetchDiscoverSongs = async () => {
-    if (!API_KEY) {
-      console.warn("SoundCloud API Key is missing.");
-      return;
-    }
-    setIsApiLoading(true);
-    try {
-      // Using SoundCloud's public charts endpoint
-      const resp = await fetch(`https://api-v2.soundcloud.com/charts?kind=top&genre=soundcloud:genres:all-music&client_id=${API_KEY}&limit=20`);
-      const data = await resp.json();
-      
-      const mapped = data.collection.map(item => {
-        const track = item.track;
-        return {
-          id: `sc-${track.id}`,
-          // Get high-res cover by replacing -large with -t500x500
-          img: track.artwork_url ? track.artwork_url.replace('-large', '-t500x500') : track.user.avatar_url,
-          title: track.title,
-          artist: track.user.username,
-          // Note: SoundCloud's stream URL requires the client_id to be appended
-          src: `https://api.soundcloud.com/tracks/${track.id}/stream?client_id=${API_KEY}`,
-          album: "SoundCloud Trending",
-          genre: track.genre || "Pop"
-        };
-      });
-      setDiscoverSongs(mapped);
-    } catch (err) {
-      console.error("SoundCloud Fetch Error:", err);
-    } finally {
-      setIsApiLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedCategory === "Discover" && discoverSongs.length === 0) {
-      fetchDiscoverSongs();
-    }
-  }, [selectedCategory]);
-
-  // Player functions
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    if (currentSongIndex === -1 || !playlist[currentSongIndex]) return;
-
-    const playAudio = async () => {
-      if (!audioRef.current) return;
-      audioRef.current.pause();
-      audioRef.current.load();
-      try {
-        await audioRef.current.play();
-        setIsPlaying(true);
-      } catch (e) {
-        setIsPlaying(false);
-        console.warn("Autoplay blocked, user interaction required.", e);
-      }
-    };
-    playAudio();
-  }, [currentSongIndex, playlist]);
-
-  const togglePlay = () => {
-    if (currentSongIndex === -1 && playlist.length > 0) {
-      setCurrentSongIndex(0);
-      return;
-    }
-    if (!audioRef.current) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
-  };
-
-  const playSong = async (song) => {
-    const originalIndex = playlist.findIndex(s => s.id === song.id);
-    if (currentSongIndex === originalIndex) {
-      togglePlay();
-    } else {
-      // Set song first to update src
-      setCurrentSongIndex(originalIndex);
-      setIsPlaying(true);
-      
-      // Attempt immediate play to satisfy mobile autoplay policies
-      if (audioRef.current) {
-        audioRef.current.src = song.src;
-        try {
-          await audioRef.current.play();
-        } catch (err) {
-          console.warn("Manual play required:", err);
-        }
-      }
-    }
-  };
-
-  const nextSong = async () => {
-    if (playlist.length === 0) return;
-    const nextIdx = (currentSongIndex + 1) % playlist.length;
-    setCurrentSongIndex(nextIdx);
-    setIsPlaying(true);
-    
-    if (audioRef.current && playlist[nextIdx]) {
-      audioRef.current.src = playlist[nextIdx].src;
-      try {
-        await audioRef.current.play();
-      } catch (err) { console.warn(err); }
-    }
-  };
-
-  const prevSong = async () => {
-    if (playlist.length === 0) return;
-    const prevIdx = (currentSongIndex - 1 + playlist.length) % playlist.length;
-    setCurrentSongIndex(prevIdx);
-    setIsPlaying(true);
-    
-    if (audioRef.current && playlist[prevIdx]) {
-      audioRef.current.src = playlist[prevIdx].src;
-      try {
-        await audioRef.current.play();
-      } catch (err) { console.warn(err); }
-    }
-  };
-
-  const adjustVolume = (delta) => {
-    setVolume(prev => Math.min(1, Math.max(0, prev + delta)));
-  };
-
-  const handleSeek = (e) => {
-    const time = Number(e.target.value);
-    audioRef.current.currentTime = time;
-    setCurrentTime(time);
-  };
-
-  const filteredPlaylist = (selectedCategory === "Discover" ? discoverSongs : playlist).filter(song => {
+  const filteredPlaylist = playlist.filter(song => {
     const query = searchTerm.toLowerCase();
-    const searchMatch = (song.title?.toLowerCase() || "").includes(query) ||
-      (song.artist?.toLowerCase() || "").includes(query) ||
-      (song.album?.toLowerCase() || "").includes(query) ||
-      (song.genre?.toLowerCase() || "").includes(query);
-
-    if (selectedCategory === "All" || selectedCategory === "Discover") return searchMatch;
-    if (selectedCategory === "Artists") return searchMatch && (song.artist && song.artist !== "Unknown" && song.artist !== "Synced Folder");
-    if (selectedCategory === "Genres") return searchMatch && song.genre;
-    if (selectedCategory === "Albums") return searchMatch && (song.album && song.album !== "Single");
-
-    return searchMatch;
+    return (song.title?.toLowerCase() || "").includes(query) ||
+      (song.artist?.toLowerCase() || "").includes(query);
   });
 
-  const track = playlist[currentSongIndex];
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
+  const quotes = [
+    "Music is the moon in the night sky.",
+    "Where words fail, music speaks.",
+    "Let the rhythm wash over your soul.",
+    "Peace begins with a single melody.",
+    "Your heart knows the rhythm."
+  ];
+  const [quote] = useState(quotes[Math.floor(Math.random() * quotes.length)]);
+
+
 
   return (
-    <div className="songlist-page-container">
-      <div className={`new-songlist-wrapper ${isSidebarOpen ? 'sidebar-active' : ''}`}>
-        
-        {/* Backdrop for mobile sidebar */}
-        {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)}></div>}
+    <div className={`dhoon-app ${immersiveMode ? `immersive-${immersiveMode}` : ''}`}>
 
-        {/* Sidebar */}
-        <div className={`new-sidebar ${isSidebarOpen ? 'mobile-open' : ''}`}>
-          <div className="sidebar-mobile-header">
-            <X size={24} color="#ffffff" onClick={() => setIsSidebarOpen(false)} />
-          </div>
-          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/9e3ae3179261313.64f6974fb4e06.jpg" className="sidebar-profile" alt="Profile" />
+      {/* Background Particles/Animations */}
+      {immersiveMode === 'rain' && <div className="rain-container"><div className="rain"></div></div>}
+      {immersiveMode === 'focus' && <div className="focus-bg"></div>}
 
-          <div className="sidebar-menu">
-            <div className={`sidebar-item`} onClick={() => navigate('/')} title="Welcome Page"><Home size={22} /></div>
-            <div className={`sidebar-item ${activeMenu === 'music' ? 'active' : ''}`} onClick={() => { setActiveMenu('music'); setIsSidebarOpen(false); }} title="Song List"><Music2 size={22} /></div>
-            <div className={`sidebar-item ${activeMenu === 'folder' ? 'active' : ''}`} onClick={() => { setActiveMenu('folder'); navigate("/Playlists"); setIsSidebarOpen(false); }} title="Playlists"><FolderOpen size={22} /></div>
-            <div className={`sidebar-item ${activeMenu === 'settings' ? 'active' : ''}`} onClick={() => { setActiveMenu('settings'); navigate("/LikedSongs"); setIsSidebarOpen(false); }} title="Liked Songs"><Settings size={22} /></div>
-            <div className="sidebar-item" onClick={() => { navigate('/AboutDhoon'); setIsSidebarOpen(false); }} title="About Dhoon"><Info size={22} /></div>
+      <div className={`main-layout ${isSidebarOpen ? 'sidebar-active' : ''}`}>
+
+        {/* Mobile Sidebar Backdrop */}
+        {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+
+        {/* Sidebar Navigation */}
+        <aside className={`nav-sidebar ${isSidebarOpen ? 'mobile-open' : ''}`}>
+          <div className="sidebar-header">
+            <h2 className="brand-logo">Dhoon</h2>
+            <button className="close-sidebar" onClick={() => setIsSidebarOpen(false)}><X /></button>
           </div>
-        </div>
+
+          <div className="nav-group">
+            <button className={`nav-link ${activeTab === 'home' ? 'active' : ''}`} onClick={() => { setActiveTab('home'); setIsSidebarOpen(false); }}>
+              <Home size={20} /> <span>Home</span>
+            </button>
+            <button className={`nav-link ${activeTab === 'playlists' ? 'active' : ''}`} onClick={() => { setActiveTab('playlists'); setIsSidebarOpen(false); }}>
+              <FolderOpen size={20} /> <span>Playlists</span>
+            </button>
+            <button className={`nav-link ${activeTab === 'liked' ? 'active' : ''}`} onClick={() => { navigate('/LikedSongs'); setIsSidebarOpen(false); }}>
+              <Heart size={20} /> <span>Favorites</span>
+            </button>
+            <button className={`nav-link ${activeTab === 'stats' ? 'active' : ''}`} onClick={() => { setActiveTab('stats'); setIsSidebarOpen(false); }}>
+              <BarChart3 size={20} /> <span>Vibe Stats</span>
+            </button>
+          </div>
+
+
+          <div className="sidebar-profile-mini" onClick={() => setActiveTab('profile')}>
+            <img src={userProfile.avatar} alt="Avatar" />
+            <div className="mini-info">
+              <span className="mini-name">{userProfile.name}</span>
+              <span className="mini-status">{userProfile.personality.split(' ')[0]}...</span>
+            </div>
+          </div>
+        </aside>
 
         {/* Main Content Area */}
-        <div className="new-main-content">
+        <main className="content-scrollable">
 
-          {/* Mobile Header (Only visible on small screens) */}
-          <div className="mobile-header">
-            <div className="new-title-mobile-wrap">
-              <button className="btn-hamburger" onClick={() => setIsSidebarOpen(true)}><Menu size={24} color="#ffffff" /></button>
-              {!showMobileSearch && <h1 className="new-title" style={{ fontSize: '24px' }}>Dhoon Playlist</h1>}
+          {/* Header */}
+          <header className="content-header glass">
+            <div className="header-left">
+              <button className="hamburger-btn" onClick={() => setIsSidebarOpen(true)}><Menu /></button>
+              <button className="back-btn-global" onClick={() => navigate("/")}>
+                <ChevronLeft size={20} />
+              </button>
+              <div className="greeting-wrap">
+                <h1 className="greeting-text">{getGreeting()}, {userProfile.name}</h1>
+                <p className="quote-text">“{quote}”</p>
+              </div>
             </div>
-            {showMobileSearch ? (
-              <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+
+            <div className="header-right">
+              <div className="search-bar glass">
+                <Search size={18} />
                 <input
                   type="text"
-                  autoFocus
-                  placeholder="Search..."
-                  className="mobile-search-input"
+                  placeholder="Find your vibe..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  onBlur={() => !searchTerm && setShowMobileSearch(false)}
                 />
-                {searchTerm && <X size={18} color="#b3b3b3" onClick={() => { setSearchTerm(""); setShowMobileSearch(false); }} style={{ marginLeft: '-30px', zIndex: 10 }} />}
+                <button onClick={startVoiceSearch}><Mic size={18} /></button>
               </div>
-            ) : (
-              <Search size={24} color="#ffffff" onClick={() => setShowMobileSearch(true)} />
-            )}
-          </div>
-
-          {/* Desktop Header */}
-          <div className="new-header">
-            <h1 className="new-title">Dhoon Playlist</h1>
-            <div className="new-search-container">
-              <Search size={18} />
-              <input
-                type="text"
-                placeholder="Search"
-                className="new-search-input"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm ? (
-                <X size={18} style={{ cursor: 'pointer', color: '#b3b3b3' }} onClick={() => setSearchTerm("")} />
-              ) : (
-                <Mic size={18} style={{ cursor: 'pointer' }} onClick={startVoiceSearch} />
-              )}
-            </div>
-          </div>
-
-          {/* Toolbar */}
-          <div className="new-toolbar">
-            <div className="new-toolbar-left">
-              <button className="btn-pick" onClick={() => fileInputRef.current.click()}>
-                <FolderPlus size={18} className="folder-icon" /> Pick Songs
+              <button className="header-icon-btn profile-btn" onClick={() => setActiveTab('profile')}>
+                <User size={20} />
               </button>
-              <button className="btn-sync" onClick={handleSyncFolder}>
-                <Download size={18} className="sync-icon" /> Sync Folder
-              </button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden-file-input"
-                accept="audio/*"
-                multiple
-                onChange={handleFileSelect}
-              />
             </div>
-            <div className="new-toolbar-right">
-              <div className="toolbar-icon"><Shuffle size={18} /></div>
-              <div className="toolbar-icon"><Repeat size={18} /></div>
-              <div className="toolbar-icon" onClick={togglePlay}>
-                {isPlaying && track ? <Pause size={18} /> : <Play size={18} fill="currentColor" />}
-              </div>
-              <div className="toolbar-icon" onClick={() => adjustVolume(-0.1)}><Volume2 size={16} /> -</div>
-              <div className="toolbar-icon" onClick={() => adjustVolume(0.1)}><Volume2 size={16} /> +</div>
-              <div className={`toggle-bg ${toggled ? 'toggled' : ''}`} onClick={() => setToggled(!toggled)}>
-                <div className="toggle-knob"></div>
-              </div>
-            </div>
-          </div>
+          </header>
 
-          <div className="new-category-filters">
-            {["All", "Discover", "Artists", "Genres", "Albums"].map(cat => (
-              <button
-                key={cat}
-                className={`filter-pill ${selectedCategory === cat ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <div className="content-body animate-fade">
 
-          {/* List Headers */}
-          <div className="list-headers">
-            <span className="header-index">#</span>
-            <span className="header-play-list">Title</span>
-            <span className="header-artist-col">Artist</span>
-            <span className="header-duration">Duration</span>
-            <span className="header-genre">Genre</span>
-            <span></span>
-          </div>
+            {activeTab === 'home' && (
+              <>
+                {/* Action Buttons */}
+                <section className="quick-actions">
+                  <button className="action-card glass" onClick={() => fileInputRef.current.click()}>
+                    <div className="icon-wrap"><FolderPlus /></div>
+                    <div className="action-info">
+                      <span className="action-title">Pick Songs</span>
+                      <span className="action-desc">Add from local device</span>
+                    </div>
+                  </button>
+                  <button className="action-card glass" onClick={handleSyncFolder}>
+                    <div className="icon-wrap"><Download /></div>
+                    <div className="action-info">
+                      <span className="action-title">Sync Folder</span>
+                      <span className="action-desc">Auto-load your library</span>
+                    </div>
+                  </button>
+                  <button className="action-card glass" onClick={() => { setActiveMood('all'); navigate('/Playlists'); }}>
+                    <div className="icon-wrap"><ListMusic /></div>
+                    <div className="action-info">
+                      <span className="action-title">Import Playlist</span>
+                      <span className="action-desc">Connect external source</span>
+                    </div>
+                  </button>
+                  <input type="file" ref={fileInputRef} className="hidden-input" accept="audio/*" multiple onChange={handleFileSelect} />
+                </section>
 
-          {/* Playlist Items */}
-          <div className="new-playlist">
-            {isApiLoading ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#b3b3b3', width: '100%' }}>
-                <div className="loading-spinner"></div>
-                <p style={{ marginTop: '15px' }}>Fetching trending music from Jamendo...</p>
-              </div>
-            ) : filteredPlaylist.length === 0 ? (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#b3b3b3', width: '100%' }}>
-                <Search size={48} style={{ marginBottom: '15px', opacity: 0.5 }} />
-                <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#ffffff' }}>No Song Found</p>
-                <p style={{ fontSize: '14px' }}>Check your spelling or try searching for another track.</p>
-              </div>
-            ) : filteredPlaylist.map((music) => {
-              const originalIndex = playlist.findIndex(s => s.id === music.id);
-              const isActive = currentSongIndex === originalIndex;
-              return (
-                <div key={music.id} className={`playlist-item ${isActive ? 'active' : ''}`} onClick={() => playSong(music)}>
-                  <div className="item-num-icon">
-                    {isActive && isPlaying ? <Music2 size={18} /> : (isActive ? <Pause size={16} /> : <Plus size={16} />)}
+                {/* Song List */}
+                <section className="song-list-section">
+                  <h2 className="section-title">Your Late Night Library</h2>
+                  <div className="song-grid">
+                    {filteredPlaylist.map((music) => {
+                      const isActive = currentSong?.id === music.id;
+                      return (
+                        <div key={music.id} className={`song-card glass ${isActive ? 'active-song' : ''}`} onClick={() => playSong(music, filteredPlaylist)}>
+                          <div className="card-artwork">
+                            <img src={music.img} alt={music.title} />
+                            {isActive && isPlaying && <div className="playing-bars"><div className="bar"></div><div className="bar"></div><div className="bar"></div></div>}
+                          </div>
+                          <div className="card-info">
+                            <span className="song-title">{music.title}</span>
+                            <span className="song-artist">{music.artist}</span>
+                          </div>
+                          <div className="card-actions">
+                            <button className={`fav-btn ${isLiked(music.id) ? 'liked' : ''}`} onClick={(e) => { e.stopPropagation(); toggleLike(music); }}>
+                              <Heart size={18} fill={isLiked(music.id) ? "currentColor" : "none"} />
+                            </button>
+                            <button className="more-btn" onClick={(e) => handleAddToPlaylistClick(music, e)}><MoreHorizontal size={18} /></button>
+                          </div>
+                          {isActive && <div className="card-glow"></div>}
+                        </div>
+                      );
+                    })}
                   </div>
-                  <div className="item-info">
-                    <img src={music.img} className="item-artwork" alt="" />
-                    <div className="item-texts">
-                      <span className="item-title">{music.title}</span>
-                      <span className="item-artist-mobile">{music.artist}</span>
+                </section>
+              </>
+            )}
+
+            {activeTab === 'playlists' && (
+              <section className="playlists-view">
+                <div className="view-header">
+                  <h2 className="section-title">Mood Collections</h2>
+                  <button className="create-pl-btn glass" onClick={() => setShowCreateModal(true)}><Plus size={18} /> New Playlist</button>
+                </div>
+                
+                <div className="mood-grid">
+                  {moodCategories.map(mood => (
+                    <div key={mood.id} className="mood-card glass" onClick={() => navigate(`/Playlist/${mood.id}`)}>
+                      <div className="mood-icon">{mood.icon}</div>
+                      <span className="mood-name">{mood.name}</span>
+                      <span className="mood-count">View Collection</span>
+                    </div>
+                  ))}
+                </div>
+
+                {userPlaylists.length > 0 && (
+                  <div className="user-playlists-section">
+                    <h3 className="section-title" style={{ marginTop: '40px' }}>Your Vibes</h3>
+                    <div className="mood-grid">
+                      {userPlaylists.map(pl => (
+                        <div key={pl.id} className="mood-card glass pl-card" onClick={() => navigate(`/Playlist/${pl.id}`)}>
+                          <div className="mood-icon"><FolderOpen size={32} /></div>
+                          <span className="mood-name">{pl.name}</span>
+                          <span className="mood-count">{pl.songs.length} Songs</span>
+                          <button 
+                            className="pl-delete-btn" 
+                            onClick={(e) => { 
+                              e.stopPropagation(); 
+                              if(window.confirm("Delete this playlist?")) deletePlaylist(pl.id); 
+                            }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <div className="item-artist-col">{music.artist}</div>
-                  <div className="item-duration">3:40</div> {/* Mocked duration per mockup since real duration isn't pre-loaded */}
-                  <div className="item-genre">
-                    {!isActive && <Heart size={16} color="#1DB954" fill="#1DB954" opacity={0} />}
+                )}
+              </section>
+            )}
+
+            {activeTab === 'stats' && (
+              <section className="stats-view">
+                <h2 className="section-title">Your Music Soul</h2>
+                <div className="stats-grid">
+                  <div className="stat-card glass full-width">
+                    <span className="stat-label">Your vibe this week</span>
+                    <h3 className="stat-value highlight">{userStats.vibeSummary}</h3>
                   </div>
-                  <div className="item-actions">
-                    <Heart
-                      size={16}
-                      className={isLiked(music.id) ? "heart-filled" : ""}
-                      fill={isLiked(music.id) ? 'currentColor' : 'none'}
-                      onClick={(e) => { e.stopPropagation(); toggleLike(music); }}
-                    />
-                    <MoreHorizontal size={18} onClick={(e) => handleAddToPlaylistClick(music, e)} />
-                    {music.id.toString().startsWith('local-') && (
-                      <div onClick={(e) => handleDeleteSong(music, e)} style={{ marginLeft: '10px' }}>🗑️</div>
-                    )}
+                  <div className="stat-card glass">
+                    <Clock className="stat-icon" />
+                    <span className="stat-label">Listening Hours</span>
+                    <span className="stat-value">{userStats.hours}h</span>
+                  </div>
+                  <div className="stat-card glass">
+                    <Flame className="stat-icon" />
+                    <span className="stat-label">Day Streak</span>
+                    <span className="stat-value">{userStats.streak}</span>
+                  </div>
+                  <div className="stat-card glass">
+                    <Heart className="stat-icon" />
+                    <span className="stat-label">Liked Songs</span>
+                    <span className="stat-value">{userStats.likedCount}</span>
+                  </div>
+                  <div className="stat-card glass">
+                    <Moon className="stat-icon" />
+                    <span className="stat-label">Peak Time</span>
+                    <span className="stat-value">{userStats.activeTime}</span>
                   </div>
                 </div>
-              );
-            })}
+              </section>
+            )}
+
+            {activeTab === 'profile' && (
+              <section className="profile-view">
+                <div className="profile-hero glass">
+                  <div className="profile-img-wrap">
+                    <img src={userProfile.avatar} alt={userProfile.name} />
+                  </div>
+                  <div className="profile-text">
+                    <h2 className="profile-name">{userProfile.name}</h2>
+                    <span className="profile-username">{userProfile.username}</span>
+                    <p className="profile-bio">{userProfile.bio}</p>
+                    <div className="personality-tag glass">{userProfile.personality}</div>
+                  </div>
+                </div>
+                <div className="profile-details-grid">
+                  <div className="detail-card glass">
+                    <span className="detail-label">Favorite Genre</span>
+                    <span className="detail-value">{userProfile.favoriteGenre}</span>
+                  </div>
+                  <div className="detail-card glass">
+                    <span className="detail-label">Favorite Artist</span>
+                    <span className="detail-value">{userProfile.favoriteArtist}</span>
+                  </div>
+                </div>
+              </section>
+            )}
+
           </div>
+        </main>
 
-        </div>
 
-        {/* Bottom Player Overlay */}
-        {track && (
-          <div className="new-bottom-player">
-            <div className="player-left">
-              <div className="player-arts-group">
-                <img src={track.img} className="player-art-1" alt="" />
-                <img src={track.img} className="player-art-2" alt="" />
+
+
+        {/* Playlist Selection Modal */}
+        {showPlaylistModal && (
+          <div className="modal-overlay" onClick={() => setShowPlaylistModal(false)}>
+            <div className="modal-content glass animate-fade" onClick={e => e.stopPropagation()}>
+              <h2 className="modal-title">Save to Playlist</h2>
+              <div className="pl-selection-list">
+                {userPlaylists.map(pl => (
+                  <button key={pl.id} className="pl-option glass" onClick={() => handleConfirmAddToPlaylist(pl.id)}>
+                    <span className="pl-name">
+                      {moodCategories.find(m => m.id === pl.moodId)?.icon} {pl.name}
+                    </span>
+                    <span className="pl-count">{pl.songs.length} Songs</span>
+                  </button>
+                ))}
+                {userPlaylists.length === 0 && <p className="empty-msg">No playlists yet.</p>}
               </div>
-              <div className="player-song-info">
-                <span className="player-song-title">{track.title}</span>
-                <span className="player-song-artist-mobile">{track.artist}</span>
-              </div>
-            </div>
-
-            <div className="player-center">
-              <span className="player-time-text">{formatTime(currentTime)}</span>
-
-              <div className="player-controls-main">
-                <button className="control-btn" onClick={prevSong}><SkipBack size={18} fill="currentColor" /></button>
-                <button className="control-btn play-btn" onClick={togglePlay}>
-                  {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
-                </button>
-                <button className="control-btn" onClick={nextSong}><SkipForward size={18} fill="currentColor" /></button>
-              </div>
-
-              <div className="progress-container">
-                <input
-                  type="range"
-                  className="progress-input"
-                  min="0"
-                  max={duration || 0}
-                  value={currentTime}
-                  onChange={handleSeek}
-                  onMouseDown={() => setIsSeeking(true)}
-                  onMouseUp={() => setIsSeeking(false)}
-                  onTouchStart={() => setIsSeeking(true)}
-                  onTouchEnd={() => setIsSeeking(false)}
-                  style={{
-                    background: `linear-gradient(to right, #1DB954 ${(currentTime / (duration || 1)) * 100}%, rgba(255,255,255,0.2) ${(currentTime / (duration || 1)) * 100}%)`
-                  }}
-                />
-              </div>
-
-              <span className="player-time-text" style={{ textAlign: 'right' }}>{formatTime(duration)}</span>
-            </div>
-
-            <div className="player-volume-controls">
-              <button className="vol-btn" onClick={() => adjustVolume(0.1)}>+</button>
-              <div className="vol-indicator">
-                <Volume2 size={14} />
-                <span>{Math.round(volume * 100)}%</span>
-              </div>
-              <button className="vol-btn" onClick={() => adjustVolume(-0.1)}>-</button>
-              <div className="desktop-vol-slider">
-                 <input 
-                   type="range" 
-                   min="0" max="1" step="0.01" 
-                   value={volume} 
-                   onChange={(e) => setVolume(Number(e.target.value))}
-                 />
-              </div>
-            </div>
-
-            <div className="player-right">
-              <Settings size={18} onClick={() => navigate('/AboutDhoon')} />
+              <button className="modal-close-btn" onClick={() => setShowPlaylistModal(false)}>Close</button>
             </div>
           </div>
         )}
 
-        {/* Audio Element Hidden */}
-        <audio
-          ref={audioRef}
-          src={track ? track.src : ''}
-          crossOrigin="anonymous"
-          onLoadedMetadata={() => setDuration(audioRef.current.duration)}
-          onTimeUpdate={() => {
-            if (!isSeeking && audioRef.current) {
-              setCurrentTime(audioRef.current.currentTime);
-            }
-          }}
-          onEnded={nextSong}
-        />
-
-        {/* Modals */}
-        {showPlaylistModal && (
-          <div className="playlist-modal-overlay" onClick={() => setShowPlaylistModal(false)}>
-            <div className="playlist-modal" onClick={e => e.stopPropagation()}>
-              <h2 className="new-title" style={{ fontSize: '24px', marginBottom: '15px' }}>Select Playlist</h2>
-              {userPlaylists.length === 0 ? (
-                <p style={{ color: '#8fa0bc' }}>No playlists created yet. Create one in the Playlists section!</p>
-              ) : (
-                <ul className="playlist-selection-list">
-                  {userPlaylists.map(pl => (
-                    <li key={pl.id} className="playlist-selection-item">
-                      <button onClick={() => handleConfirmAddToPlaylist(pl.id)}>
-                        {pl.name} ({pl.songs.length}/{pl.limit})
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <button className="btn-pick" style={{ marginTop: '15px', width: '100%', justifyContent: 'center' }} onClick={() => setShowPlaylistModal(false)}>Close</button>
-            </div>
+        {/* Create Playlist Modal */}
+        {showCreateModal && (
+          <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
+            <form className="modal-content glass animate-fade" onClick={e => e.stopPropagation()} onSubmit={handleCreatePlaylist}>
+              <h2 className="modal-title">New Collection</h2>
+              <div className="input-group">
+                <label>Name your vibe</label>
+                <input
+                  type="text"
+                  value={newPlaylistName}
+                  onChange={(e) => setNewPlaylistName(e.target.value)}
+                  placeholder="e.g. Midnight Soul"
+                  required
+                  autoFocus
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="modal-close-btn" onClick={() => setShowCreateModal(false)} style={{ marginTop: 0 }}>Cancel</button>
+                <button type="submit" className="play-pause-main" style={{ width: 'auto', padding: '0 25px', borderRadius: '50px' }}>Create</button>
+              </div>
+            </form>
           </div>
         )}
 

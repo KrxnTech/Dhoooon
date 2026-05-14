@@ -46,12 +46,11 @@
 
 .about-brand {
   margin: 0 0 clamp(0.75rem, 2.5vh, 1.5rem);
-  font-family: "Yesteryear", cursive;
+  font-family: "Pacifico", cursive;
   font-size: clamp(2.25rem, 10vw, 5rem);
   font-weight: 400;
   color: var(--about-text);
-  letter-spacing: 0.02em;
-  line-height: 1.1;
+  line-height: 1.3;
 }
 
 .about-title {

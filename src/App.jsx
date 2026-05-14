@@ -8,6 +8,8 @@ import LikedSong from "./components/LikedSong";
 import Playlists from "./components/Playlists";
 import PlaylistDetail from "./components/PlaylistDetail";
 
+import GlobalPlayer from "./components/GlobalPlayer";
+
 function App() {
   return (
     <>
@@ -21,6 +23,7 @@ function App() {
           <Route path="/Playlists" element={<Playlists />} />
           <Route path="/Playlist/:id" element={<PlaylistDetail />} />
         </Routes>
+        <GlobalPlayer />
       </BrowserRouter>
     </>
   );
